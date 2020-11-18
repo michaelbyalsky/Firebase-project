@@ -2,12 +2,13 @@ import React, { useRef, useState } from "react";
 import { Card, Form, Button, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useHistory } from "react-router-dom";
+import { auth } from "../firebase"
 import "bootstrap/dist/css/bootstrap.min.css";
 export default function Sighnup() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { sighnup } = useAuth();
+  const { signup, saveToUsers } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
@@ -21,7 +22,8 @@ export default function Sighnup() {
     try {
       setError("");
       setLoading(true);
-      await sighnup(emailRef.current.value, passwordRef.current.value);
+      await signup(emailRef.current.value, passwordRef.current.value);
+      await saveToUsers(emailRef.current.value, {email: emailRef.current.value})
       history.push("/");
     } catch (err) {
       console.error(err);
